@@ -241,9 +241,9 @@ body {
 }
 .phase-btn {
   padding: 12px 8px;
-  border: 1px solid #333;
+  border: 1px solid #444;
   background: #1a1a1a;
-  color: #aaa;
+  color: #ccc;
   font-family: 'DM Mono', monospace;
   font-size: 7pt;
   letter-spacing: 0.08em;
@@ -251,6 +251,7 @@ body {
   cursor: pointer;
   text-align: center;
 }
+.phase-btn span { color: #999 !important; }
 .phase-btn.active { border-color: var(--accent); color: white; background: rgba(192,57,43,0.15); }
 .week-day-row {
   display: grid;
