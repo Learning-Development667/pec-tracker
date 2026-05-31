@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Pec Tracker">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Pectoral Training Tracker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -793,6 +802,27 @@ body {
   .app-nav { gap: 2px; }
   .nav-btn { padding: 8px 8px; font-size: 6.5pt; }
 }
+
+/* ── MOOD BUTTONS ── */
+.mood-btn {
+  background: none;
+  border: 2px solid transparent;
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.mood-btn:hover { background: #222; }
+.mood-btn.mood-selected { background: #222; border-color: #444; }
+.mood-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 6.5pt;
+  letter-spacing: 0.08em;
+}
 </style>
 </head>
 <body>
@@ -871,9 +901,9 @@ body {
     <div class="form-group">
       <label class="form-label">Phase</label>
       <div class="phase-selector">
-        <button class="phase-btn active" onclick="selectPhase(1,this)">Phase 1<br><span style="font-size:7pt;color:#fff;">Wks 1–4 · 3×8</span></button>
-        <button class="phase-btn" onclick="selectPhase(2,this)">Phase 2<br><span style="font-size:7pt;color:#fff;">Wks 5–8 · 3×10</span></button>
-        <button class="phase-btn" onclick="selectPhase(3,this)">Phase 3<br><span style="font-size:7pt;color:#fff;">Wks 9–12 · 4×6</span></button>
+        <button class="phase-btn active" onclick="selectPhase(1,this)">Phase 1<br><span style="font-size:6pt;">Wks 1–4 · 3×8</span></button>
+        <button class="phase-btn" onclick="selectPhase(2,this)">Phase 2<br><span style="font-size:6pt;">Wks 5–8 · 3×10</span></button>
+        <button class="phase-btn" onclick="selectPhase(3,this)">Phase 3<br><span style="font-size:6pt;">Wks 9–12 · 4×6</span></button>
       </div>
     </div>
     <div class="week-day-row">
@@ -923,6 +953,11 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/pec-tracker/sw.js');
+}
+</script>
 <script src="content/formguides.js"></script>
 <script src="js/scripts.js"></script>
 
