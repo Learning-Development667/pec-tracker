@@ -49,7 +49,7 @@ body {
   font-size: 8pt;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #555;
+  color: #999;
   margin-bottom: 32px;
 }
 .gate-input {
@@ -148,7 +148,7 @@ body {
 }
 .dash-welcome h2 span { color: var(--accent); }
 .dash-welcome p {
-  color: #888;
+  color: #bbb;
   font-size: 9pt;
   margin-top: 6px;
   line-height: 1.6;
@@ -176,12 +176,12 @@ body {
   font-size: 6.5pt;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #555;
+  color: #999;
   margin-top: 4px;
 }
 .stat-sub {
   font-size: 8pt;
-  color: #888;
+  color: #aaa;
   margin-top: 2px;
 }
 .recent-sessions {
@@ -210,7 +210,7 @@ body {
 .recent-date {
   font-family: 'DM Mono', monospace;
   font-size: 7.5pt;
-  color: #555;
+  color: #999;
 }
 .recent-phase {
   font-size: 7.5pt;
@@ -243,7 +243,7 @@ body {
   padding: 12px 8px;
   border: 1px solid #333;
   background: #1a1a1a;
-  color: #666;
+  color: #aaa;
   font-family: 'DM Mono', monospace;
   font-size: 7pt;
   letter-spacing: 0.08em;
@@ -264,7 +264,7 @@ body {
   font-size: 7pt;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #666;
+  color: #999;
   display: block;
   margin-bottom: 6px;
 }
@@ -302,7 +302,7 @@ body {
 .exercise-log-target {
   font-family: 'DM Mono', monospace;
   font-size: 7pt;
-  color: #555;
+  color: #999;
   letter-spacing: 0.08em;
 }
 .exercise-log-body {
@@ -314,7 +314,7 @@ body {
 .set-row-label {
   font-family: 'DM Mono', monospace;
   font-size: 7pt;
-  color: #555;
+  color: #999;
   margin-bottom: 4px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -361,7 +361,7 @@ body {
 .chart-meta {
   font-family: 'DM Mono', monospace;
   font-size: 7pt;
-  color: #555;
+  color: #999;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 16px;
@@ -429,7 +429,7 @@ body {
 .history-meta {
   font-family: 'DM Mono', monospace;
   font-size: 7pt;
-  color: #555;
+  color: #999;
   letter-spacing: 0.08em;
   margin-top: 2px;
 }
@@ -451,7 +451,7 @@ body {
 .history-ex-stats {
   font-family: 'DM Mono', monospace;
   font-size: 7.5pt;
-  color: #666;
+  color: #aaa;
   text-align: right;
 }
 .delete-btn {
@@ -469,21 +469,22 @@ body {
 
 /* ── INLINE FORM GUIDE ── */
 .fg-toggle-btn {
-  background: none;
-  border: 1px solid #333;
-  color: #666;
+  background: #27ae60;
+  border: none;
+  color: white;
   font-family: 'DM Mono', monospace;
-  font-size: 6.5pt;
+  font-size: 7.5pt;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 5px 10px;
+  padding: 8px 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;
+  font-weight: 500;
 }
-.fg-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
-.fg-toggle-btn.open { border-color: var(--accent); color: var(--accent); background: rgba(192,57,43,0.08); }
+.fg-toggle-btn:hover { background: #219a52; }
+.fg-toggle-btn.open { background: #1e8449; }
 .inline-form-guide {
   display: none;
   border-top: 1px solid #222;
