@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Pectoral Training Tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="loading-bar" id="loadingBar"></div>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-title">Pectoral<br><span>Tracker</span></div>
+    <div class="gate-sub">Mark Brown · 3-Month Programme</div>
+    <input type="password" class="gate-input" id="gateInput" placeholder="••••••••••••••••" autocomplete="current-password">
+    <button class="gate-btn" onclick="checkPassword()">Enter</button>
+    <div class="gate-error" id="gateError">Incorrect password</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="app-header">
+    <div class="app-logo">Pec <span>Tracker</span></div>
+    <nav class="app-nav">
+      <button class="nav-btn active" onclick="showView('dashboard', this)">Dashboard</button>
+      <button class="nav-btn" onclick="showView('log', this)">Log Session</button>
+      <button class="nav-btn" onclick="showView('progress', this)">Progress</button>
+      <button class="nav-btn" onclick="showView('history', this)">History</button>
+    </nav>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <div class="dash-welcome">
+      <h2>Your <span>Programme</span></h2>
+      <p>3-Month Pectoral Programme · Novice · 44yrs · Mon / Wed / Fri</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-sessions">0</div>
+        <div class="stat-label">Sessions logged</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-pb">—</div>
+        <div class="stat-label">Best bench press</div>
+        <div class="stat-sub" id="stat-pb-sub">No data yet</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-week">—</div>
+        <div class="stat-label">Current week</div>
+        <div class="stat-sub" id="stat-phase-sub">—</div>
+      </div>
+    </div>
+    <div class="recent-sessions">
+      <div class="section-title">Recent Sessions</div>
+      <div id="recent-list"><div class="empty-state"><p>No sessions logged yet</p></div></div>
+    </div>
+
+    <!-- WARM-UP AND STRETCHING -->
+    <div class="recent-sessions" style="margin-top:0;">
+      <div class="section-title" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleDashSection('warmup-stretch')">
+        <span>Warm-Up and Stretching Guide</span><span id="ws-arrow">▾</span>
+      </div>
+      <div id="warmup-stretch" style="display:none;">
+        <div style="background:#111;border:1px solid #222;padding:12px 14px;margin-bottom:12px;font-size:8pt;color:#777;line-height:1.7;">
+          <strong style="color:#bbb;">Warm-up: 2 min before every session (outside session time)</strong><br>
+          Arm circles (10 fwd, 10 back) · Chest opener stretch (10s × 3) · Empty bar press (1 × 10)
+        </div>
+        <div style="background:#111;border:1px solid #222;padding:12px 14px;font-size:8pt;color:#777;line-height:1.7;">
+          <strong style="color:#bbb;">Post-session stretching: 5 min after every session (outside session time)</strong><br>
+          Doorway chest stretch 60s · Lying chest opener 60s · Cross-body shoulder stretch 40s · Overhead tricep stretch 40s
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG SESSION -->
+  <div class="view" id="view-log">
+    <div class="section-title" style="margin-bottom:16px;">Log a Session</div>
+
+    <div class="form-group">
+      <label class="form-label">Phase</label>
+      <div class="phase-selector">
+        <button class="phase-btn active" onclick="selectPhase(1,this)">Phase 1<br><span style="color:#555;font-size:6pt;">Wks 1–4 · 3×8</span></button>
+        <button class="phase-btn" onclick="selectPhase(2,this)">Phase 2<br><span style="color:#555;font-size:6pt;">Wks 5–8 · 3×10</span></button>
+        <button class="phase-btn" onclick="selectPhase(3,this)">Phase 3<br><span style="color:#555;font-size:6pt;">Wks 9–12 · 4×6</span></button>
+      </div>
+    </div>
+
+    <div class="week-day-row">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Week</label>
+        <select class="form-select" id="sel-week">
+          <option value="1">Week 1</option><option value="2">Week 2</option>
+          <option value="3">Week 3</option><option value="4">Week 4</option>
+          <option value="5">Week 5</option><option value="6">Week 6</option>
+          <option value="7">Week 7</option><option value="8">Week 8</option>
+          <option value="9">Week 9</option><option value="10">Week 10</option>
+          <option value="11">Week 11</option><option value="12">Week 12</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Day</label>
+        <select class="form-select" id="sel-day">
+          <option value="Monday">Monday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Friday">Friday</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="exercise-log-list" style="margin-top:16px;"></div>
+    <button class="save-btn" id="save-btn" onclick="saveSession()">Save Session</button>
+    <div class="save-status" id="save-status"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="view" id="view-progress">
+    <div class="section-title" style="margin-bottom:16px;">Personal Bests</div>
+    <div class="pb-grid" id="pb-grid"></div>
+    <div class="section-title" style="margin-bottom:16px;">Progress Charts</div>
+    <div id="charts-container"></div>
+    <div class="empty-state" id="progress-empty" style="display:none;">
+      <p>Log at least one session to see progress</p>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="view" id="view-history">
+    <div class="section-title" style="margin-bottom:16px;">Session History</div>
+    <div id="history-list"><div class="empty-state"><p>No sessions logged yet</p></div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="content/formguides.js"></script>
+<script src="js/scripts.js"></script>
+
+</body>
+</html>
