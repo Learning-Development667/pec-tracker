@@ -1,7 +1,7 @@
 // ── CONFIG ──
-const PASSWORD = 'TrainApp';
+const PASSWORD = 'TrainingApp';
 const BIN_ID   = '6a1c1ce5ddf5aa59f77b7666';
-const API_KEY  = '$2a$10$3ndQ23/GtXtiDjSQ8iUDOOQ7Qi/0m2u8KKkGmhfz5tJv1hSfb/U2W'; // Paste your JSONBin Master Key here
+const API_KEY  = 'YOUR_API_KEY_HERE'; // Paste your JSONBin Master Key here
 const BIN_URL  = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
 // ── EXERCISE DEFINITIONS ──
@@ -52,6 +52,51 @@ let sessions = [];
 let currentPhase = 1;
 let charts = {};
 
+
+// ── TRAINING REMINDERS ──
+// Schedules a daily check at 19:15 on Mon, Wed, Fri
+function setupReminders() {
+  if (!('Notification' in window)) return;
+
+  Notification.requestPermission().then(permission => {
+    if (permission !== 'granted') return;
+    scheduleNextReminder();
+  });
+}
+
+function scheduleNextReminder() {
+  const now = new Date();
+  const target = new Date();
+  const trainingDays = [1, 3, 5]; // Mon, Wed, Fri
+
+  target.setHours(19, 15, 0, 0);
+
+  // Find next training day at 19:15
+  let daysAhead = 0;
+  for (let i = 0; i <= 7; i++) {
+    const check = new Date(now);
+    check.setDate(now.getDate() + i);
+    check.setHours(19, 15, 0, 0);
+    if (trainingDays.includes(check.getDay()) && check > now) {
+      daysAhead = i;
+      target.setDate(now.getDate() + i);
+      break;
+    }
+  }
+
+  const msUntil = target - now;
+  if (msUntil <= 0) return;
+
+  setTimeout(() => {
+    new Notification('Pec Tracker', {
+      body: "Time for tonight's session. Let's go.",
+      icon: '/pec-tracker/icons/icon-192.png'
+    });
+    // Schedule next one after firing
+    setTimeout(scheduleNextReminder, 60000);
+  }, msUntil);
+}
+
 // ── PASSWORD ──
 function checkPassword() {
   const val = document.getElementById('gateInput').value;
@@ -59,6 +104,7 @@ function checkPassword() {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     loadData();
+    setupReminders();
   } else {
     document.getElementById('gateError').style.display = 'block';
     document.getElementById('gateInput').value = '';
@@ -119,7 +165,7 @@ function renderExerciseLog() {
           <span>Form Guide</span><span class="fg-arrow">▾</span>
         </button>
       </div>
-      <div class="exercise-log-body">
+      <div class="exercise-log-body" style="grid-template-columns:1fr 1fr;gap:10px;">
         <div class="form-group">
           <div class="set-row-label">Weight (kg)</div>
           <input type="number" class="form-input" id="w-${ex.id}" placeholder="e.g. 40" step="0.5" min="0">
@@ -128,15 +174,46 @@ function renderExerciseLog() {
           <div class="set-row-label">Sets completed</div>
           <input type="number" class="form-input" id="s-${ex.id}" placeholder="${phase.sets}" min="0" max="10" value="${phase.sets}">
         </div>
-        <div class="form-group">
-          <div class="set-row-label">Notes</div>
-          <input type="text" class="form-input" id="n-${ex.id}" placeholder="How did it feel?">
+        <div class="form-group" style="grid-column:1/-1;">
+          <div class="set-row-label" style="margin-bottom:8px;">How did it feel?</div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button type="button" class="mood-btn" id="mood-${ex.id}-good" onclick="selectMood('${ex.id}','good',this)">
+              <svg width="38" height="38" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#1a1a1a" stroke="#27ae60" stroke-width="1.5"/><circle cx="12" cy="15" r="3" fill="#27ae60"/><circle cx="24" cy="15" r="3" fill="#27ae60"/><ellipse cx="10" cy="21" rx="4" ry="3" fill="#27ae60" opacity="0.3"/><ellipse cx="26" cy="21" rx="4" ry="3" fill="#27ae60" opacity="0.3"/><path d="M11 22 Q18 30 25 22" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round"/></svg>
+              <span class="mood-lbl" style="color:#27ae60;">GOOD</span>
+            </button>
+            <button type="button" class="mood-btn" id="mood-${ex.id}-ok" onclick="selectMood('${ex.id}','ok',this)">
+              <svg width="38" height="38" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#1a1a1a" stroke="#888" stroke-width="1.5"/><circle cx="12" cy="15" r="3" fill="#888"/><circle cx="24" cy="15" r="3" fill="#888"/><line x1="11" y1="24" x2="25" y2="24" stroke="#888" stroke-width="2.5" stroke-linecap="round"/></svg>
+              <span class="mood-lbl" style="color:#888;">OK</span>
+            </button>
+            <button type="button" class="mood-btn" id="mood-${ex.id}-tough" onclick="selectMood('${ex.id}','tough',this)">
+              <svg width="38" height="38" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#1a1a1a" stroke="#c0392b" stroke-width="1.5"/><circle cx="12" cy="16" r="3" fill="#c0392b"/><circle cx="24" cy="16" r="3" fill="#c0392b"/><line x1="8" y1="10" x2="15" y2="13" stroke="#c0392b" stroke-width="2" stroke-linecap="round"/><line x1="28" y1="10" x2="21" y2="13" stroke="#c0392b" stroke-width="2" stroke-linecap="round"/><path d="M11 28 Q18 20 25 28" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round"/></svg>
+              <span class="mood-lbl" style="color:#c0392b;">TOUGH</span>
+            </button>
+            <input type="text" class="form-input" id="n-${ex.id}" placeholder="Notes (optional)" style="flex:1;min-width:0;">
+          </div>
         </div>
       </div>
       ${formGuideHTML}`;
 
     container.appendChild(card);
   });
+}
+
+// ── MOOD SELECTION ──
+function selectMood(exId, mood, btn) {
+  ['good','ok','tough'].forEach(m => {
+    const b = document.getElementById('mood-' + exId + '-' + m);
+    if (b) b.classList.remove('mood-selected');
+  });
+  btn.classList.add('mood-selected');
+}
+
+function getMood(exId) {
+  for (const m of ['good','ok','tough']) {
+    const b = document.getElementById('mood-' + exId + '-' + m);
+    if (b && b.classList.contains('mood-selected')) return m;
+  }
+  return '';
 }
 
 function toggleFormGuide(exId, btn) {
@@ -207,6 +284,7 @@ async function saveSession() {
     const wVal = document.getElementById('w-' + id)?.value;
     const sVal = document.getElementById('s-' + id)?.value;
     const nVal = document.getElementById('n-' + id)?.value;
+    const mVal = getMood(id);
 
     if (wVal) {
       exerciseData.push({
@@ -215,6 +293,7 @@ async function saveSession() {
         weight: parseFloat(wVal),
         sets: parseInt(sVal) || phase.sets,
         targetReps: phase.reps,
+        mood: mVal || '',
         notes: nVal || ''
       });
     }
@@ -433,7 +512,7 @@ function renderHistory() {
     const exRows = s.exercises.map(ex =>
       `<div class="history-ex-row">
         <div class="history-ex-name">${ex.name}</div>
-        <div class="history-ex-stats">${ex.weight}kg · ${ex.sets} sets × ${ex.targetReps} reps${ex.notes ? ' · ' + ex.notes : ''}</div>
+        <div class="history-ex-stats">${ex.weight}kg · ${ex.sets} sets × ${ex.targetReps} reps${ex.mood ? ' · ' + ex.mood.toUpperCase() : ''}${ex.notes ? ' · ' + ex.notes : ''}</div>
       </div>`
     ).join('');
     const realIdx = sessions.length - 1 - i;
