@@ -1,5 +1,5 @@
 // ── CONFIG ──
-const PASSWORD = 'TrainingApp';
+const PASSWORD = 'TrainApp';
 const BIN_ID   = '6a1c1ce5ddf5aa59f77b7666';
 const API_KEY  = 'YOUR_API_KEY_HERE'; // Paste your JSONBin Master Key here
 const BIN_URL  = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
