@@ -1,6 +1,8 @@
 // ── CONFIG ──
-// BIN_ID, API_KEY and BIN_URL are defined in config.js
-// PASSWORD removed — app loads without authentication
+const PASSWORD = 'TrainApp';
+const BIN_ID   = '6a1c1ce5ddf5aa59f77b7666';
+const API_KEY  = 'YOUR_API_KEY_HERE'; // Paste your JSONBin Master Key here
+const BIN_URL  = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
 // ── EXERCISE DEFINITIONS ──
 const PHASES = {
@@ -95,11 +97,23 @@ function scheduleNextReminder() {
   }, msUntil);
 }
 
-// ── AUTO LOAD ──
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('app').style.display = 'block';
-  loadData();
-  setupReminders();
+// ── PASSWORD ──
+function checkPassword() {
+  const val = document.getElementById('gateInput').value;
+  if (val === PASSWORD) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadData();
+    setupReminders();
+  } else {
+    document.getElementById('gateError').style.display = 'block';
+    document.getElementById('gateInput').value = '';
+    document.getElementById('gateInput').focus();
+  }
+}
+
+document.getElementById('gateInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
 });
 
 // ── NAV ──
@@ -211,8 +225,43 @@ function toggleFormGuide(exId, btn) {
   btn.querySelector('.fg-arrow').textContent = isOpen ? '▾' : '▴';
 }
 
-// Init exercise log on week change
+// ── AUTO ADVANCE ──
+function advanceSession() {
+  const sessionSel = document.getElementById('sel-session');
+  const weekSel    = document.getElementById('sel-week');
+  const current    = sessionSel.value;
+  const week       = parseInt(weekSel.value);
+
+  if (current === '1/3') {
+    sessionSel.value = '2/3';
+  } else if (current === '2/3') {
+    sessionSel.value = '3/3';
+  } else {
+    // Session 3/3 — move to next week, session 1/3
+    sessionSel.value = '1/3';
+    const nextWeek = week + 1;
+    if (nextWeek <= 12) {
+      weekSel.value = nextWeek;
+      // Auto-advance phase if needed
+      if (nextWeek >= 9 && currentPhase < 3) {
+        currentPhase = 3;
+        document.querySelectorAll('.phase-btn').forEach((b, i) => {
+          b.classList.toggle('active', i === 2);
+        });
+      } else if (nextWeek >= 5 && currentPhase < 2) {
+        currentPhase = 2;
+        document.querySelectorAll('.phase-btn').forEach((b, i) => {
+          b.classList.toggle('active', i === 1);
+        });
+      }
+    }
+  }
+  renderExerciseLog();
+}
+
+// Init exercise log on week or session change
 document.getElementById('sel-week').addEventListener('change', renderExerciseLog);
+document.getElementById('sel-session').addEventListener('change', renderExerciseLog);
 renderExerciseLog();
 
 // ── JSONBIN API ──
@@ -259,7 +308,7 @@ async function saveSession() {
   const status = document.getElementById('save-status');
   const phase  = PHASES[currentPhase];
   const week   = parseInt(document.getElementById('sel-week').value);
-  const day    = document.getElementById('sel-day').value;
+  const day    = document.getElementById('sel-session').value;
 
   const exerciseData = [];
   const cards = document.querySelectorAll('.exercise-log-card');
@@ -308,6 +357,7 @@ async function saveSession() {
     await saveData();
     showToast('Session saved', 'success');
     status.textContent = '';
+    advanceSession();
     document.querySelectorAll('.exercise-log-card input').forEach(i => {
       if (i.type !== 'number' || i.id.startsWith('s-')) return;
       i.value = '';
