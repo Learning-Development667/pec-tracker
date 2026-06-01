@@ -38,75 +38,8 @@ body {
   min-height: 100vh;
 }
 
-/* ── PASSWORD GATE ── */
-#gate {
-  position: fixed;
-  inset: 0;
-  background: #0f0f0f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 20px;
-}
-.gate-box {
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-}
-.gate-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 36pt;
-  color: white;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.gate-title span { color: var(--accent); }
-.gate-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 8pt;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #fff;
-  margin-bottom: 32px;
-}
-.gate-input {
-  width: 100%;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: white;
-  font-family: 'DM Mono', monospace;
-  font-size: 14pt;
-  padding: 14px 16px;
-  letter-spacing: 0.2em;
-  outline: none;
-  margin-bottom: 12px;
-  text-align: center;
-}
-.gate-input:focus { border-color: var(--accent); }
-.gate-btn {
-  width: 100%;
-  background: var(--accent);
-  color: white;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 16pt;
-  letter-spacing: 0.1em;
-  border: none;
-  padding: 14px;
-  cursor: pointer;
-}
-.gate-btn:hover { background: #a93226; }
-.gate-error {
-  font-size: 8pt;
-  color: var(--accent);
-  font-family: 'DM Mono', monospace;
-  margin-top: 10px;
-  letter-spacing: 0.1em;
-  display: none;
-}
-
 /* ── APP SHELL ── */
-#app { display: none; }
+#app { display: block; }
 .app-header {
   background: #0f0f0f;
   padding: 16px 20px;
@@ -948,6 +881,7 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <script src="content/formguides.js"></script>
+<script src="js/config.js"></script>
 <script src="js/scripts.js"></script>
 
 </body>
