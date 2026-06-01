@@ -1,8 +1,6 @@
 // ── CONFIG ──
-const PASSWORD = 'TrainApp';
-const BIN_ID   = '6a1c1ce5ddf5aa59f77b7666';
-const API_KEY  = 'YOUR_API_KEY_HERE'; // Paste your JSONBin Master Key here
-const BIN_URL  = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+// BIN_ID, API_KEY and BIN_URL are defined in js/config.js
+// PASSWORD removed — app loads without authentication
 
 // ── EXERCISE DEFINITIONS ──
 const PHASES = {
@@ -52,12 +50,9 @@ let sessions = [];
 let currentPhase = 1;
 let charts = {};
 
-
 // ── TRAINING REMINDERS ──
-// Schedules a daily check at 19:15 on Mon, Wed, Fri
 function setupReminders() {
   if (!('Notification' in window)) return;
-
   Notification.requestPermission().then(permission => {
     if (permission !== 'granted') return;
     scheduleNextReminder();
@@ -67,18 +62,15 @@ function setupReminders() {
 function scheduleNextReminder() {
   const now = new Date();
   const target = new Date();
-  const trainingDays = [1, 3, 5]; // Mon, Wed, Fri
+  const trainingDays = [1, 3, 5];
 
   target.setHours(19, 15, 0, 0);
 
-  // Find next training day at 19:15
-  let daysAhead = 0;
   for (let i = 0; i <= 7; i++) {
     const check = new Date(now);
     check.setDate(now.getDate() + i);
     check.setHours(19, 15, 0, 0);
     if (trainingDays.includes(check.getDay()) && check > now) {
-      daysAhead = i;
       target.setDate(now.getDate() + i);
       break;
     }
@@ -92,28 +84,17 @@ function scheduleNextReminder() {
       body: "Time for tonight's session. Let's go.",
       icon: '/pec-tracker/icons/icon-192.png'
     });
-    // Schedule next one after firing
     setTimeout(scheduleNextReminder, 60000);
   }, msUntil);
 }
 
-// ── PASSWORD ──
-function checkPassword() {
-  const val = document.getElementById('gateInput').value;
-  if (val === PASSWORD) {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    loadData();
-    setupReminders();
-  } else {
-    document.getElementById('gateError').style.display = 'block';
-    document.getElementById('gateInput').value = '';
-    document.getElementById('gateInput').focus();
-  }
-}
-
-document.getElementById('gateInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkPassword();
+// ── AUTO LOAD ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sel-week').addEventListener('change', renderExerciseLog);
+  document.getElementById('sel-session').addEventListener('change', renderExerciseLog);
+  renderExerciseLog();
+  loadData();
+  setupReminders();
 });
 
 // ── NAV ──
@@ -237,12 +218,10 @@ function advanceSession() {
   } else if (current === '2/3') {
     sessionSel.value = '3/3';
   } else {
-    // Session 3/3 — move to next week, session 1/3
     sessionSel.value = '1/3';
     const nextWeek = week + 1;
     if (nextWeek <= 12) {
       weekSel.value = nextWeek;
-      // Auto-advance phase if needed
       if (nextWeek >= 9 && currentPhase < 3) {
         currentPhase = 3;
         document.querySelectorAll('.phase-btn').forEach((b, i) => {
@@ -258,11 +237,6 @@ function advanceSession() {
   }
   renderExerciseLog();
 }
-
-// Init exercise log on week or session change
-document.getElementById('sel-week').addEventListener('change', renderExerciseLog);
-document.getElementById('sel-session').addEventListener('change', renderExerciseLog);
-renderExerciseLog();
 
 // ── JSONBIN API ──
 function loadingStart() {
@@ -285,7 +259,7 @@ async function loadData() {
     sessions = data.record?.sessions || [];
     renderDashboard();
   } catch(e) {
-    showToast('Could not load data — check API key', 'error');
+    showToast('Could not load data — check connection', 'error');
   }
   loadingDone();
 }
