@@ -1,8 +1,6 @@
 // ── CONFIG ──
-const PASSWORD = 'TrainApp';
-const BIN_ID   = '6a1c1ce5ddf5aa59f77b7666';
-const API_KEY  = 'YOUR_API_KEY_HERE'; // Paste your JSONBin Master Key here
-const BIN_URL  = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+// BIN_ID, API_KEY and BIN_URL are defined in config.js
+// PASSWORD removed — app loads without authentication
 
 // ── EXERCISE DEFINITIONS ──
 const PHASES = {
@@ -97,23 +95,11 @@ function scheduleNextReminder() {
   }, msUntil);
 }
 
-// ── PASSWORD ──
-function checkPassword() {
-  const val = document.getElementById('gateInput').value;
-  if (val === PASSWORD) {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    loadData();
-    setupReminders();
-  } else {
-    document.getElementById('gateError').style.display = 'block';
-    document.getElementById('gateInput').value = '';
-    document.getElementById('gateInput').focus();
-  }
-}
-
-document.getElementById('gateInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkPassword();
+// ── AUTO LOAD ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('app').style.display = 'block';
+  loadData();
+  setupReminders();
 });
 
 // ── NAV ──
